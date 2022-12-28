@@ -12,13 +12,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
-  var _notifyHelper;
+  NotifyHelper? _notifyHelper;
 
   @override
   void initState() {
     super.initState();
     _notifyHelper = NotifyHelper();
-    _notifyHelper.initializeNotification();
+    _notifyHelper?.initializeNotification();
   }
 
   @override
@@ -41,11 +41,12 @@ class _HomeState extends State<HomePage> {
       leading: GestureDetector(
         onTap: () async {
           ThemeService().switchTheme();
-          _notifyHelper.displayNotification(
+          _notifyHelper?.displayNotification(
               title: "Theme Changed",
               body: Get.isDarkMode
-                  ? "Activated Dark Theme"
-                  : "Activate White Theme");
+                  ? "Activate Light Theme"
+                  : "Activated Dark Theme");
+          _notifyHelper?.scheduledNotification("Schedule", 3);
         },
         child: Icon(
           (ThemeService().theme == ThemeMode.dark)
