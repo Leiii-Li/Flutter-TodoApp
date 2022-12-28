@@ -52,7 +52,6 @@ class NotifyHelper {
   }
 
   displayNotification({required String title, required String body}) async {
-    debugPrint("doing test");
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
         _channelId, _channelName, _channelDesc,
         importance: Importance.max, priority: Priority.high);
