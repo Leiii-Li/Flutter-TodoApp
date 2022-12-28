@@ -15,7 +15,7 @@ class _HomeState extends State<HomePage> {
   var _notifyHelper;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     _notifyHelper = NotifyHelper();
     _notifyHelper.initializeNotification();
@@ -39,11 +39,13 @@ class _HomeState extends State<HomePage> {
   _appBar() {
     return AppBar(
       leading: GestureDetector(
-        onTap: () {
-          debugPrint("on theme button tap");
+        onTap: () async {
           ThemeService().switchTheme();
-          _notifyHelper.displayNotification(title:"Theme Changed",
-          body:Get.isDarkMode?"Activated Dark Theme":"Activate White Theme");
+          _notifyHelper.displayNotification(
+              title: "Theme Changed",
+              body: Get.isDarkMode
+                  ? "Activated Dark Theme"
+                  : "Activate White Theme");
         },
         child: Icon(
           (ThemeService().theme == ThemeMode.dark)
