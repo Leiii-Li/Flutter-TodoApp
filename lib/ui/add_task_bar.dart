@@ -16,7 +16,9 @@ class AddTaskPage extends StatefulWidget {
 class _AddTaskPageState extends State<AddTaskPage> {
   DateTime _selectedDate = DateTime.now();
   String _startTime = DateFormat(timeFormat).format(DateTime.now()).toString();
-  String _endTime = "9:30 PM";
+  String _endTime = DateFormat(timeFormat)
+      .format(DateTime.now().add(Duration(hours: 4)))
+      .toString();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
     TimeOfDay? time = await showTimePicker(
         initialEntryMode: TimePickerEntryMode.input,
         context: context,
-        initialTime: TimeOfDay(hour: 9, minute: 10));
+        initialTime: TimeOfDay(
+            hour: int.parse(_startTime.split(":")[0]),
+            minute: int.parse(_startTime.split(":")[1].split(" ")[0])));
 
     if (time != null) {
       final timeStr = time.format(context);
@@ -89,7 +93,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         }
       });
     } else {
-      debugPrint("time canceld");
+      debugPrint("time canceled");
     }
   }
 
