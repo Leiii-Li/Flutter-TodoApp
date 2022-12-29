@@ -46,9 +46,7 @@ class InputField extends StatelessWidget {
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                               color: context.theme.backgroundColor, width: 0)),
-                      border: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: context.theme.backgroundColor, width: 0))),
+                      border: InputBorder.none),
                 )),
                 _widget == null
                     ? Container()

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo_app/ui/theme.dart';
 import 'package:todo_app/utils/Constant.dart';
+import 'package:todo_app/widgets/create_button.dart';
 import 'package:todo_app/widgets/input_field.dart';
 import 'package:intl/intl.dart';
 
@@ -26,9 +27,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
   String _selectedRepeat = "None";
   List _repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
+  int _selectedColorIndex = 0;
+  List _colorList = [primaryClr, pinkClr, yellowClr];
+
+  TextEditingController _titleTextEditingController = TextEditingController();
+  TextEditingController _noteTextEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.theme.backgroundColor,
       appBar: _appBar(context),
       body: Container(
         color: context.theme.backgroundColor,
@@ -41,8 +49,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 "Add Task",
                 style: headingStyle,
               ),
-              InputField("Title", "Enter title here", null, null),
-              InputField("Note", "Enter note here", null, null),
+              InputField("Title", "Enter title here",
+                  _titleTextEditingController, null),
+              InputField(
+                  "Note", "Enter note here", _noteTextEditingController, null),
               InputField("Date", DateFormat.yMd().format(_selectedDate), null,
                   _dateSelectWidget()),
               Row(
@@ -128,11 +138,80 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       }
                     },
                   )),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Color",
+                        style: titleStyle,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Wrap(
+                        children:
+                            List<Widget>.generate(_colorList.length, (index) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedColorIndex = index;
+                              });
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: CircleAvatar(
+                                radius: 14,
+                                backgroundColor: _colorList[index],
+                                child: _selectedColorIndex == index
+                                    ? Icon(
+                                        Icons.done,
+                                        color: Colors.white,
+                                        size: 16,
+                                      )
+                                    : Container(),
+                              ),
+                            ),
+                          );
+                        }),
+                      )
+                    ],
+                  ),
+                  _createTaskBar()
+                ],
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  _createTaskBar() {
+    return CreateTaskButton("Create Task", () {
+      _validTaskInfo();
+    });
+  }
+
+  _validTaskInfo() {
+    String title = _titleTextEditingController.text;
+    String note = _noteTextEditingController.text;
+    if (title.isEmpty || note.isEmpty) {
+      Get.snackbar("Required", "All fields are required",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: Get.isDarkMode ? Colors.black : Colors.white,
+          backgroundColor: Get.isDarkMode ? Colors.white : Colors.grey,
+          icon: Icon(
+            Icons.warning_amber_rounded,
+            color: Get.isDarkMode ? Colors.black : Colors.black,
+          ));
+    }
   }
 
   _onTimeSelected(bool isStartTime) async {

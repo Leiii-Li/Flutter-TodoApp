@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/ui/add_task_bar.dart';
 import 'package:todo_app/ui/theme.dart';
-import 'package:todo_app/widgets/button.dart';
+import 'package:todo_app/widgets/add_button.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,6 +31,7 @@ class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.theme.backgroundColor,
       appBar: _appBar(),
       body: Column(
         children: [
