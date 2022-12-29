@@ -1,16 +1,125 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todo_app/ui/theme.dart';
+import 'package:todo_app/utils/Constant.dart';
+import 'package:todo_app/widgets/input_field.dart';
+import 'package:intl/intl.dart';
 
-class AddTaskPage extends StatelessWidget {
+class AddTaskPage extends StatefulWidget {
   AddTaskPage({super.key});
+
+  @override
+  State<AddTaskPage> createState() => _AddTaskPageState();
+}
+
+class _AddTaskPageState extends State<AddTaskPage> {
+  DateTime _selectedDate = DateTime.now();
+  String _startTime = DateFormat(timeFormat).format(DateTime.now()).toString();
+  String _endTime = "9:30 PM";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(context),
-      body: Container(),
+      body: Container(
+        color: context.theme.backgroundColor,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Add Task",
+              style: headingStyle,
+            ),
+            InputField("Title", "Enter title here", null, null),
+            InputField("Note", "Enter note here", null, null),
+            InputField("Date", DateFormat.yMd().format(_selectedDate), null,
+                _dateSelectWidget()),
+            Row(
+              children: [
+                Expanded(
+                  child: InputField(
+                      "Start Time",
+                      _startTime,
+                      null,
+                      IconButton(
+                        icon: Icon(Icons.access_time_rounded),
+                        onPressed: () {
+                          _onTimeSelected(true);
+                        },
+                      )),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: InputField(
+                      "End Time",
+                      _endTime,
+                      null,
+                      IconButton(
+                        icon: Icon(Icons.access_time_rounded),
+                        onPressed: () {
+                          _onTimeSelected(false);
+                        },
+                      )),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
     );
+  }
+
+  _onTimeSelected(bool isStartTime) async {
+    TimeOfDay? time = await showTimePicker(
+        initialEntryMode: TimePickerEntryMode.input,
+        context: context,
+        initialTime: TimeOfDay(hour: 9, minute: 10));
+
+    if (time != null) {
+      final timeStr = time.format(context);
+      setState(() {
+        if (isStartTime) {
+          _startTime = timeStr;
+        } else {
+          _endTime = timeStr;
+        }
+      });
+    } else {
+      debugPrint("time canceld");
+    }
+  }
+
+  _dateSelectWidget() {
+    return IconButton(
+      icon: Icon(
+        Icons.date_range_outlined,
+        color: Get.isDarkMode ? Colors.grey : Colors.grey[600],
+      ),
+      onPressed: () {
+        debugPrint("press date");
+        _getDateFromUser();
+      },
+    );
+  }
+
+  _getDateFromUser() async {
+    DateTime? _pickerDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2022),
+        lastDate: DateTime(2122));
+    if (_pickerDate != null) {
+      setState(() {
+        _selectedDate = _pickerDate;
+        debugPrint("$_selectedDate");
+      });
+    } else {
+      debugPrint("not select any time");
+    }
   }
 
   _appBar(BuildContext context) {
