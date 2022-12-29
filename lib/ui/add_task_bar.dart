@@ -20,6 +20,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
       .format(DateTime.now().add(Duration(hours: 4)))
       .toString();
 
+  int _selectedRemind = 5;
+  List _remindList = ["5", "10", "15", "20"];
+
+  String _selectedRepeat = "None";
+  List _repeatList = ["None", "Daily", "Weekly", "Monthly"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,49 +33,103 @@ class _AddTaskPageState extends State<AddTaskPage> {
       body: Container(
         color: context.theme.backgroundColor,
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Add Task",
-              style: headingStyle,
-            ),
-            InputField("Title", "Enter title here", null, null),
-            InputField("Note", "Enter note here", null, null),
-            InputField("Date", DateFormat.yMd().format(_selectedDate), null,
-                _dateSelectWidget()),
-            Row(
-              children: [
-                Expanded(
-                  child: InputField(
-                      "Start Time",
-                      _startTime,
-                      null,
-                      IconButton(
-                        icon: Icon(Icons.access_time_rounded),
-                        onPressed: () {
-                          _onTimeSelected(true);
-                        },
-                      )),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: InputField(
-                      "End Time",
-                      _endTime,
-                      null,
-                      IconButton(
-                        icon: Icon(Icons.access_time_rounded),
-                        onPressed: () {
-                          _onTimeSelected(false);
-                        },
-                      )),
-                ),
-              ],
-            )
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Add Task",
+                style: headingStyle,
+              ),
+              InputField("Title", "Enter title here", null, null),
+              InputField("Note", "Enter note here", null, null),
+              InputField("Date", DateFormat.yMd().format(_selectedDate), null,
+                  _dateSelectWidget()),
+              Row(
+                children: [
+                  Expanded(
+                    child: InputField(
+                        "Start Time",
+                        _startTime,
+                        null,
+                        IconButton(
+                          icon: Icon(Icons.access_time_rounded),
+                          onPressed: () {
+                            _onTimeSelected(true);
+                          },
+                        )),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: InputField(
+                        "End Time",
+                        _endTime,
+                        null,
+                        IconButton(
+                          icon: Icon(Icons.access_time_rounded),
+                          onPressed: () {
+                            _onTimeSelected(false);
+                          },
+                        )),
+                  ),
+                ],
+              ),
+              InputField(
+                  "Remind",
+                  "$_selectedRemind minutes early",
+                  null,
+                  DropdownButton(
+                    underline: Container(
+                      height: 0,
+                    ),
+                    icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                    iconSize: 32,
+                    elevation: 4,
+                    style: subTitleStyle,
+                    items: _remindList.map<DropdownMenuItem<String>>((value) {
+                      return DropdownMenuItem<String>(
+                        child: Text(value),
+                        value: value,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedRemind = int.parse(value);
+                        });
+                      }
+                    },
+                  )),
+              InputField(
+                  "Repeat",
+                  _selectedRepeat,
+                  null,
+                  DropdownButton(
+                    underline: Container(
+                      height: 0,
+                    ),
+                    icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                    iconSize: 32,
+                    elevation: 4,
+                    style: subTitleStyle,
+                    items: _repeatList.map<DropdownMenuItem<String>>((value) {
+                      return DropdownMenuItem<String>(
+                        child: Text(value),
+                        value: value,
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedRepeat = value;
+                        });
+                      }
+                    },
+                  )),
+            ],
+          ),
         ),
       ),
     );
