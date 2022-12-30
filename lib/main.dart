@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/db/app_db.dart';
 import 'package:todo_app/services/theme_service.dart';
 import 'package:todo_app/ui/home_page.dart';
 import 'package:todo_app/ui/theme.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppDatabaseHelper.initDatabase();
   await GetStorage.init();
   runApp(const MyApp());
 }

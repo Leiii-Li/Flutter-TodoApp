@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todo_app/bean/task.dart';
+import 'package:todo_app/controller/task_controller.dart';
 import 'package:todo_app/ui/theme.dart';
 import 'package:todo_app/utils/Constant.dart';
 import 'package:todo_app/widgets/create_button.dart';
@@ -15,6 +17,8 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  TaskController _taskController = Get.put(TaskController());
+
   DateTime _selectedDate = DateTime.now();
   String _startTime = DateFormat(timeFormat).format(DateTime.now()).toString();
   String _endTime = DateFormat(timeFormat)
@@ -199,7 +203,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     });
   }
 
-  _validTaskInfo() {
+  _validTaskInfo() async {
     String title = _titleTextEditingController.text;
     String note = _noteTextEditingController.text;
     if (title.isEmpty || note.isEmpty) {
@@ -211,6 +215,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
             Icons.warning_amber_rounded,
             color: Get.isDarkMode ? Colors.black : Colors.black,
           ));
+    } else {
+      final task = Task(
+          title: title,
+          note: note,
+          isCompleted: 0,
+          date: _selectedDate.toString(),
+          startTime: _startTime,
+          endTime: _endTime,
+          color: _colorList[_selectedColorIndex],
+          remind: _selectedRemind,
+          repeat: _selectedRepeat);
+      int value = await _taskController.addTask(task);
+      debugPrint("insert a new task ,id is $value");
     }
   }
 
