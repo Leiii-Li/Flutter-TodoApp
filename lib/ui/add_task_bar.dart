@@ -223,11 +223,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
           date: _selectedDate.toString(),
           startTime: _startTime,
           endTime: _endTime,
-          color: _colorList[_selectedColorIndex],
+          color: _selectedColorIndex,
           remind: _selectedRemind,
           repeat: _selectedRepeat);
       int value = await _taskController.addTask(task);
       debugPrint("insert a new task ,id is $value");
+      Get.back();
     }
   }
 

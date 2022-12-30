@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/controller/task_controller.dart';
 import 'package:todo_app/services/notification_service.dart';
 import 'package:todo_app/services/theme_service.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import 'package:todo_app/ui/add_task_bar.dart';
 import 'package:todo_app/ui/theme.dart';
 import 'package:todo_app/widgets/add_button.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
+import 'package:todo_app/widgets/task_tile.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomeState extends State<HomePage> {
   NotifyHelper? _notifyHelper;
   DateTime _selectedDate = DateTime.now();
+  TaskController _taskController = Get.put(TaskController());
 
   @override
   void initState() {
@@ -34,12 +37,19 @@ class _HomeState extends State<HomePage> {
       backgroundColor: context.theme.backgroundColor,
       appBar: _appBar(),
       body: Column(
-        children: [
-          _addTaskBar(),
-          _addDateBar(),
-        ],
+        children: [_addTaskBar(), _addDateBar(), _tasksBar()],
       ),
     );
+  }
+
+  _tasksBar() {
+    return Expanded(child: Obx(() {
+      return ListView.builder(
+          itemCount: _taskController.taskList.length,
+          itemBuilder: (context, index) {
+            return TaskTile(_taskController.taskList[index]);
+          });
+    }));
   }
 
   _appBar() {
@@ -99,8 +109,9 @@ class _HomeState extends State<HomePage> {
               ],
             ),
           ),
-          AddTaskButton("Add Task", () {
-            Get.to(AddTaskPage());
+          AddTaskButton("Add Task", () async {
+            await Get.to(AddTaskPage());
+            _taskController.loadTasks();
           })
         ],
       ),
