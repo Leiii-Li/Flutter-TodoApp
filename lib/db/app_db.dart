@@ -18,8 +18,8 @@ class AppDatabaseHelper {
       _databaseInstance = await openDatabase(_path, version: _version,
           onCreate: (db, version) async {
         print("create a new one");
-        await _databaseInstance?.execute('''
-          CREATE TABLE $_taskTableName(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, note TEXT, date TEXT, startTime TEXT, endTime TEXT, remind INTEGER, repeat TEXT, color INTEGER, isCompleted INTEGER)
+        return await db.execute('''
+          CREATE TABLE $_taskTableName (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, note TEXT, date TEXT, startTime TEXT, endTime TEXT, remind INTEGER, repeat TEXT, color INTEGER, isCompleted INTEGER)
         ''');
       });
     } catch (e) {
@@ -33,6 +33,6 @@ class AppDatabaseHelper {
   }
 
   static Future<List<Map<String, Object?>>?> queryAllTasks() async {
-    return await _databaseInstance?.query(_taskTableName);
+    return _databaseInstance?.query(_taskTableName);
   }
 }

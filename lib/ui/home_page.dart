@@ -29,6 +29,7 @@ class _HomeState extends State<HomePage> {
     super.initState();
     _notifyHelper = NotifyHelper();
     _notifyHelper?.initializeNotification();
+    _taskController.loadTasks();
   }
 
   @override
@@ -37,7 +38,14 @@ class _HomeState extends State<HomePage> {
       backgroundColor: context.theme.backgroundColor,
       appBar: _appBar(),
       body: Column(
-        children: [_addTaskBar(), _addDateBar(), _tasksBar()],
+        children: [
+          _addTaskBar(),
+          _addDateBar(),
+          SizedBox(
+            height: 8,
+          ),
+          _tasksBar()
+        ],
       ),
     );
   }
