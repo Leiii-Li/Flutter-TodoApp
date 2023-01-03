@@ -43,8 +43,6 @@ class AppDatabaseHelper {
   }
 
   static Future<int> completeTask(Task task) async {
-    return await _databaseInstance?.update(_taskTableName, task.toJson(),
-            where: "isCompleted=?", whereArgs: [task.isCompleted]) ??
-        0;
+    return await _databaseInstance?.update(_taskTableName, task.toJson(), where: "id=?", whereArgs: [task.id]) ?? 0;
   }
 }
