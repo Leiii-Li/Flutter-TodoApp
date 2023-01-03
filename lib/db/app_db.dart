@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo_app/bean/task.dart';
+import 'package:intl/intl.dart';
 
 class AppDatabaseHelper {
   static Database? _databaseInstance;
@@ -32,8 +33,9 @@ class AppDatabaseHelper {
     return await _databaseInstance?.insert(_taskTableName, task.toJson()) ?? 1;
   }
 
-  static Future<List<Map<String, Object?>>?> queryAllTasks() async {
-    return _databaseInstance?.query(_taskTableName);
+  static Future<List<Map<String, Object?>>?> queryAllTasks(DateTime selectedDate) async {
+    String _selectedDateArgsValue = DateFormat.yMd().format(selectedDate);
+    return _databaseInstance?.query(_taskTableName,where: "date=? or repeat=?",whereArgs: [_selectedDateArgsValue,"Daily"]);
   }
 
   static Future<int> deleteTask(Task task) async {

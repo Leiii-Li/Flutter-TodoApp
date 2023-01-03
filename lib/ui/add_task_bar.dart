@@ -220,7 +220,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           title: title,
           note: note,
           isCompleted: 0,
-          date: _selectedDate.toString(),
+          date:  DateFormat.yMd().format(_selectedDate),
           startTime: _startTime,
           endTime: _endTime,
           color: _selectedColorIndex,

@@ -15,16 +15,16 @@ class TaskController extends GetxController {
     return await AppDatabaseHelper.insertTask(task);
   }
 
-  void loadTasks() async {
+  void loadTasks(DateTime selectedDate) async {
     taskList.clear();
     List<Map<String, Object?>>? queryAllTasks =
-        await AppDatabaseHelper.queryAllTasks();
-    debugPrint(" tasks size : ${queryAllTasks?.length}");
+        await AppDatabaseHelper.queryAllTasks(selectedDate);
     if (queryAllTasks != null && queryAllTasks.isNotEmpty) {
       for (int i = 0; i < queryAllTasks.length; i++) {
         taskList.add(Task.fromJson(queryAllTasks[i]));
       }
     }
+    debugPrint(" tasks size : ${queryAllTasks?.length}");
   }
 
   void completeTask(Task task) async {

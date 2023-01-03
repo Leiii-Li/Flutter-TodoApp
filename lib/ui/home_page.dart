@@ -33,7 +33,7 @@ class _HomeState extends State<HomePage> {
     super.initState();
     _notifyHelper = NotifyHelper();
     _notifyHelper?.initializeNotification();
-    _taskController.loadTasks();
+    _taskController.loadTasks(_selectedDate);
   }
 
   @override
@@ -85,11 +85,11 @@ class _HomeState extends State<HomePage> {
         TaskBottomSheetCallback(onTaskCompleted: (task) {
           task.isCompleted = 1;
           _taskController.completeTask(task);
-          _taskController.loadTasks();
+          _taskController.loadTasks(_selectedDate);
           Get.back();
         }, onTaskDeleted: (task) {
           _taskController.deleteTask(task);
-          _taskController.loadTasks();
+          _taskController.loadTasks(_selectedDate);
           Get.back();
         })));
   }
@@ -153,7 +153,7 @@ class _HomeState extends State<HomePage> {
           ),
           AddTaskButton("Add Task", () async {
             await Get.to(AddTaskPage());
-            _taskController.loadTasks();
+            _taskController.loadTasks(_selectedDate);
           })
         ],
       ),
@@ -182,6 +182,7 @@ class _HomeState extends State<HomePage> {
         ),
         onDateChange: (date) {
           _selectedDate = date;
+          _taskController.loadTasks(_selectedDate);
           debugPrint("on date selected $_selectedDate");
         },
       ),
