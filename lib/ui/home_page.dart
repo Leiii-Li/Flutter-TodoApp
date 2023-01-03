@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/ui/add_task_bar.dart';
 import 'package:todo_app/ui/theme.dart';
+import 'package:todo_app/utils/Constant.dart';
 import 'package:todo_app/widgets/add_button.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:todo_app/widgets/task_bottom_sheet.dart';
@@ -103,7 +104,7 @@ class _HomeState extends State<HomePage> {
         onTap: () async {
           ThemeService().switchTheme();
           _notifyHelper?.displayNotification(
-              title: "Theme Changed",
+              title: themeChangeStr,
               body: Get.isDarkMode
                   ? "Activate Light Theme"
                   : "Activated Dark Theme");

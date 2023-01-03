@@ -5,11 +5,7 @@ import 'package:todo_app/db/app_db.dart';
 
 class TaskController extends GetxController {
   RxList taskList = RxList();
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
+  Rx<dynamic> notifiedPageTask = Rx<Task?>(null);
 
   Future<int> addTask(Task task) async {
     return await AppDatabaseHelper.insertTask(task);
@@ -34,5 +30,18 @@ class TaskController extends GetxController {
 
   void deleteTask(Task task) async {
     AppDatabaseHelper.deleteTask(task);
+  }
+
+  void queryTask(int taskId) async {
+    try {
+      List<Map<String, Object?>>? queryTaskJson =
+          await AppDatabaseHelper.queryTask(taskId);
+      if (queryTaskJson != null) {
+        Task task = Task.fromJson(queryTaskJson[0]);
+        notifiedPageTask.value = task;
+      }
+    } catch (e) {
+      notifiedPageTask.value = null;
+    }
   }
 }

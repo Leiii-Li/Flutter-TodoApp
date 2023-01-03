@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:todo_app/ui/notified_page.dart';
+import 'package:todo_app/utils/Constant.dart';
 
 class NotifyHelper {
   String _channelId = "todo_app_channel";
@@ -34,7 +36,9 @@ class NotifyHelper {
     } else {
       debugPrint("Notification Done");
     }
-    Get.to(() => Container(color: Colors.white));
+    if (payload != themeChangeStr) {
+      Get.to(() => NotifiedPage(payload));
+    }
   }
 
   scheduledNotification(
@@ -51,7 +55,8 @@ class NotifyHelper {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time);
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: "$id");
   }
 
   displayNotification({required String title, required String body}) async {
@@ -67,7 +72,7 @@ class NotifyHelper {
       title,
       body,
       platformChannelSpecifics,
-      payload: 'It could be anything you pass',
+      payload: title,
     );
   }
 
