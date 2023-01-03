@@ -5,7 +5,7 @@ import 'package:todo_app/db/app_db.dart';
 
 class TaskController extends GetxController {
   RxList taskList = RxList();
-  Rx<dynamic> notifiedPageTask = Rx<Task?>(null);
+  Rx<dynamic> notifiedPageTask = Rx<dynamic>(null);
 
   Future<int> addTask(Task task) async {
     return await AppDatabaseHelper.insertTask(task);
@@ -40,6 +40,7 @@ class TaskController extends GetxController {
         Task task = Task.fromJson(queryTaskJson[0]);
         notifiedPageTask.value = task;
       }
+      debugPrint("query task $queryTaskJson");
     } catch (e) {
       notifiedPageTask.value = null;
     }

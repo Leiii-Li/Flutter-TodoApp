@@ -30,6 +30,7 @@ class _NotifiedPageState extends State<NotifiedPage> {
     _taskController.notifiedPageTask
         .addListener(GetStream<dynamic>(onListen: () {
       var notifiedPageTask = _taskController.notifiedPageTask;
+      debugPrint("onListen $notifiedPageTask");
       if (notifiedPageTask is Task) {
         setState(() {
           Task currentTask = notifiedPageTask as Task;
@@ -38,6 +39,7 @@ class _NotifiedPageState extends State<NotifiedPage> {
       }
     }, onResume: () {
       var notifiedPageTask = _taskController.notifiedPageTask;
+      debugPrint("onResume ");
       if (notifiedPageTask is Task) {
         setState(() {
           Task currentTask = notifiedPageTask as Task;
@@ -71,18 +73,6 @@ class _NotifiedPageState extends State<NotifiedPage> {
           color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
-      actions: [
-        Image(
-          image: AssetImage(Get.isDarkMode
-              ? "images/personal_fill_dark.png"
-              : "images/personal_fill_light.png"),
-          width: 26,
-          height: 26,
-        ),
-        SizedBox(
-          width: 20,
-        )
-      ],
     );
   }
 }
