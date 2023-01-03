@@ -35,4 +35,16 @@ class AppDatabaseHelper {
   static Future<List<Map<String, Object?>>?> queryAllTasks() async {
     return _databaseInstance?.query(_taskTableName);
   }
+
+  static Future<int> deleteTask(Task task) async {
+    return await _databaseInstance
+            ?.delete(_taskTableName, where: "id=?", whereArgs: [task.id]) ??
+        0;
+  }
+
+  static Future<int> completeTask(Task task) async {
+    return await _databaseInstance?.update(_taskTableName, task.toJson(),
+            where: "isCompleted=?", whereArgs: [task.isCompleted]) ??
+        0;
+  }
 }

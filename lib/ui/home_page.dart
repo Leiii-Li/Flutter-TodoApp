@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/bean/task.dart';
 import 'package:todo_app/controller/task_controller.dart';
 import 'package:todo_app/services/notification_service.dart';
 import 'package:todo_app/services/theme_service.dart';
@@ -10,7 +11,10 @@ import 'package:todo_app/ui/add_task_bar.dart';
 import 'package:todo_app/ui/theme.dart';
 import 'package:todo_app/widgets/add_button.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
+import 'package:todo_app/widgets/task_bottom_sheet.dart';
+import 'package:todo_app/widgets/task_bottom_sheet_interface.dart';
 import 'package:todo_app/widgets/task_tile.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -55,9 +59,39 @@ class _HomeState extends State<HomePage> {
       return ListView.builder(
           itemCount: _taskController.taskList.length,
           itemBuilder: (context, index) {
-            return TaskTile(_taskController.taskList[index]);
+            return AnimationConfiguration.staggeredList(
+                duration: Duration(milliseconds: 375),
+                position: index,
+                child: GestureDetector(
+                  onTap: () {
+                    _onTaskTileTap(_taskController.taskList[index]);
+                  },
+                  child: SlideAnimation(
+                      horizontalOffset: 50.0,
+                      child: FadeInAnimation(
+                        duration: Duration(milliseconds: 375),
+                        child: TaskTile(
+                          _taskController.taskList[index],
+                        ),
+                      )),
+                ));
           });
     }));
+  }
+
+  _onTaskTileTap(Task task) {
+    Get.bottomSheet(TaskBottomSheet(
+        task,
+        TaskBottomSheetCallback(onTaskCompleted: (task) {
+          task.isCompleted = 1;
+          _taskController.completeTask(task);
+          _taskController.loadTasks();
+          Get.back();
+        }, onTaskDeleted: (task) {
+          _taskController.deleteTask(task);
+          _taskController.loadTasks();
+          Get.back();
+        })));
   }
 
   _appBar() {

@@ -17,12 +17,22 @@ class TaskController extends GetxController {
 
   void loadTasks() async {
     taskList.clear();
-    List<Map<String, Object?>>? queryAllTasks = await AppDatabaseHelper.queryAllTasks();
+    List<Map<String, Object?>>? queryAllTasks =
+        await AppDatabaseHelper.queryAllTasks();
     debugPrint(" tasks size : ${queryAllTasks?.length}");
     if (queryAllTasks != null && queryAllTasks.isNotEmpty) {
       for (int i = 0; i < queryAllTasks.length; i++) {
         taskList.add(Task.fromJson(queryAllTasks[i]));
       }
     }
+  }
+
+  void completeTask(Task task) async {
+    var completeTask = await AppDatabaseHelper.completeTask(task);
+    debugPrint("completed task call , $completeTask");
+  }
+
+  void deleteTask(Task task) async {
+    AppDatabaseHelper.deleteTask(task);
   }
 }
