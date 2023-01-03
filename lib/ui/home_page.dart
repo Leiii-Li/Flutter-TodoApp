@@ -59,6 +59,7 @@ class _HomeState extends State<HomePage> {
       return ListView.builder(
           itemCount: _taskController.taskList.length,
           itemBuilder: (context, index) {
+            _scheduleTask(_taskController.taskList[index]);
             return AnimationConfiguration.staggeredList(
                 duration: Duration(milliseconds: 375),
                 position: index,
@@ -187,5 +188,17 @@ class _HomeState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  void _scheduleTask(Task task) {
+    if (task.isCompleted == 0) {
+      debugPrint("Schedule task : ${task.title}");
+      // 未完成，那么需要在指定时间进行提示
+      String startTime = task.startTime ?? "";
+      DateTime date = DateFormat.jm().parse(startTime);
+      var startTimeStr = DateFormat("HH:mm").format(date).split(":");
+      _notifyHelper?.scheduledNotification(task.title ?? "", task.note ?? "",
+          task.id ?? 0, int.parse(startTimeStr[0]), int.parse(startTimeStr[1]));
+    }
   }
 }

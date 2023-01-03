@@ -127,7 +127,7 @@ class TaskBottomSheet extends StatelessWidget {
             color: Get.isDarkMode ? Colors.grey : Colors.white,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: Get.isDarkMode ? Colors.grey : Colors.white,
+              color: Get.isDarkMode ? Colors.white : Colors.grey,
             )),
         child: Center(
           child: Text(

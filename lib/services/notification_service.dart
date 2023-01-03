@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:timezone/timezone.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class NotifyHelper {
   String _channelId = "todo_app_channel";
@@ -14,7 +15,7 @@ class NotifyHelper {
       FlutterLocalNotificationsPlugin();
 
   void initializeNotification() async {
-    tz.initializeTimeZones();
+    _configureLocalTimezone();
 
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings("appicon");
@@ -36,27 +37,29 @@ class NotifyHelper {
     Get.to(() => Container(color: Colors.white));
   }
 
-  scheduledNotification(String title, int seconds) async {
+  scheduledNotification(
+      String title, String note, int id, int hour, int minutes) async {
     debugPrint("schedule notification");
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
+        id,
         title,
-        'theme changes $seconds seconds ago',
-        TZDateTime.now(local).add(Duration(seconds: seconds)),
+        note,
+        _convertTime(hour, minutes),
         NotificationDetails(
             android: AndroidNotificationDetails(
                 _channelId, _channelName, _channelDesc)),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+            UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time);
   }
 
   displayNotification({required String title, required String body}) async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         _channelId, _channelName, _channelDesc,
         importance: Importance.max, priority: Priority.high);
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
@@ -66,5 +69,22 @@ class NotifyHelper {
       platformChannelSpecifics,
       payload: 'It could be anything you pass',
     );
+  }
+
+  Future<void> _configureLocalTimezone() async {
+    tz.initializeTimeZones();
+    final String timeZone = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZone));
+  }
+
+  tz.TZDateTime _convertTime(int hour, int minutes) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduleDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minutes);
+    if (scheduleDate.isBefore(now)) {
+      scheduleDate = scheduleDate.add(Duration(days: 1));
+    }
+    debugPrint("_covertTime : ${scheduleDate.toString()}");
+    return scheduleDate;
   }
 }
